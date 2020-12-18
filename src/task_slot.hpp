@@ -7,7 +7,7 @@
 #include <boost/noncopyable.hpp>
 #include <cassert>
 
-namespace abama_ss::core
+namespace simple_ss::core
 {
     template <size_t hwm = 100, typename FunType = std::function<void()>,
               typename Cont = std::vector<FunType>>
@@ -49,6 +49,6 @@ namespace abama_ss::core
         container_type *current_slot = &_container[0];
         container_type *next_slot = &_container[1];
     };
-} // namespace abama_ss::core
+} // namespace simple_ss::core
 
 #endif

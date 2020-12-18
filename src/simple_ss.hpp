@@ -11,15 +11,16 @@
 #include <vector>
 #include "task_slot.hpp"
 
-namespace abama_ss
+namespace simple_ss
 {
     namespace core
     {
         using tag_type = int;
+        using task_level = int;
         template <typename fun_type>
         auto get_exe_fun(tag_type data_tag, fun_type fn);
 
-        class abama_core : public boost::noncopyable
+        class task_manager : public boost::noncopyable
         {
         public:
             template <typename fun_type>
@@ -30,12 +31,12 @@ namespace abama_ss
         private:
             std::map<tag_type, const void *> _tag_data_map;
             std::map<tag_type, std::vector<std::function<void()>>> _tag_fun_map;
-            std::map<size_t, task_slot<1000>> _task_sink;
+            std::map<task_level, task_slot<1000>> _task_sink;
 
         public:
-            static abama_core &get_instance()
+            static task_manager &get_instance()
             {
-                static abama_core _instance;
+                static task_manager _instance;
                 return _instance;
             }
 
@@ -61,9 +62,9 @@ namespace abama_ss
                 task_slot.insert(std::begin(func_s), std::end(func_s));
             }
 
-            void run(int task_level)
+            void run(task_level level)
             {
-                auto &task_slot = _task_sink[task_level];
+                auto &task_slot = _task_sink[level];
                 task_slot.run();
             }
         };
@@ -74,7 +75,7 @@ namespace abama_ss
             auto trans_fun = [=]() {
                 auto par = static_cast<
                     std::add_const_t<typename arg_at_functions<0, fun_type>::type>>(
-                    abama_core::get_instance()._tag_data_map.at(data_tag));
+                    task_manager::get_instance()._tag_data_map.at(data_tag));
 
                 if (par != nullptr)
                 {
@@ -84,6 +85,6 @@ namespace abama_ss
             return trans_fun;
         }
     } // namespace core
-} // namespace abama_ss
+} // namespace simple_ss
 
 #endif
