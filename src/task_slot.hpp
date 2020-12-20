@@ -14,7 +14,7 @@ namespace simple_ss::core
     class task_slot : public boost::noncopyable
     {
     public:
-        static_assert(hwm > 0, "HWM muser greater than 100");
+        static_assert(hwm > 0, "HWM muster greater than 0");
         using container_type = Cont;
         using value_type = FunType;
 
